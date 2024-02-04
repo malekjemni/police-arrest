@@ -7,8 +7,7 @@ using UnityEngine.Windows;
 /* Note: animations are called via the controller for both the character and capsule using animator null checks
  */
 
-namespace StarterAssets
-{
+
     [RequireComponent(typeof(CharacterController))]
 #if ENABLE_INPUT_SYSTEM 
     [RequireComponent(typeof(PlayerInput))]
@@ -105,7 +104,7 @@ namespace StarterAssets
 #endif
         private Animator _animator;
         private CharacterController _controller;
-        private StarterAssetsInputs _input;
+        private PlayerInputManager _input;
         private GameObject _mainCamera;
 
         private const float _threshold = 0.01f;
@@ -141,7 +140,7 @@ namespace StarterAssets
             arrestSystem = GetComponent<ArrestSystem>();
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
-            _input = GetComponent<StarterAssetsInputs>();
+            _input = GetComponent<PlayerInputManager>();
 #if ENABLE_INPUT_SYSTEM 
             _playerInput = GetComponent<PlayerInput>();
 #else
@@ -163,6 +162,7 @@ namespace StarterAssets
             GroundedCheck();
             Move();
             Arrest();
+            ScanAera();
         }
 
         private void LateUpdate()
@@ -216,14 +216,24 @@ namespace StarterAssets
                 _cinemachineTargetYaw, 0.0f);
         }
 
+
+        //This is the part where we get E input and trigger arrest animation/logic
         private void Arrest()
         {
             if (_input.arrest && arrestSystem.isNear) 
             { 
                 _animator.SetTrigger(_animIDArrest);
-                arrestSystem.ShowPopInEffect();
+                arrestSystem.ArrestOutlaw();
             }
             _input.arrest = false;             
+        }
+        private void ScanAera()
+        {
+            if (_input.scan)
+            {
+                arrestSystem.CheckForOutlaw();
+            }
+            _input.scan = false;
         }
 
         private void Move()
@@ -404,4 +414,3 @@ namespace StarterAssets
             }
         }
     }
-}

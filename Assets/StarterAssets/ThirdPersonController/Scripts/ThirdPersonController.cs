@@ -111,6 +111,7 @@ namespace StarterAssets
         private const float _threshold = 0.01f;
 
         private bool _hasAnimator;
+        private ArrestSystem arrestSystem;
 
         private bool IsCurrentDeviceMouse
         {
@@ -137,7 +138,7 @@ namespace StarterAssets
         private void Start()
         {
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
-            
+            arrestSystem = GetComponent<ArrestSystem>();
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
@@ -217,7 +218,11 @@ namespace StarterAssets
 
         private void Arrest()
         {
-            if (_input.arrest) { _animator.SetTrigger(_animIDArrest); }
+            if (_input.arrest && arrestSystem.isNear) 
+            { 
+                _animator.SetTrigger(_animIDArrest);
+                arrestSystem.ShowPopInEffect();
+            }
             _input.arrest = false;             
         }
 

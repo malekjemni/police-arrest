@@ -1,4 +1,6 @@
 using DG.Tweening;
+using StarterAssets;
+using System.Collections;
 using UnityEngine;
 
 public class ArrestSystem : MonoBehaviour
@@ -7,15 +9,26 @@ public class ArrestSystem : MonoBehaviour
     public Material normalMaterial;
     public Material highlightedMaterial;
     public GameObject popup;
+    public GameObject popup_menu;
+    public bool isNear;
     [SerializeField] private Transform openPos;
     [SerializeField] private Transform closePos;
     [SerializeField] private float moveTime;
+    [SerializeField] private float popInDuration;
+    [SerializeField] private float popInScale;
+    private StarterAssetsInputs _input;
+    private void Start()
+    {
+        _input = GetComponent<StarterAssetsInputs>();
+        _input.arrest = false;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Outlaw"))
         {
             popup.transform.DOMove(openPos.position, moveTime).SetEase(Ease.InOutSine);
+            isNear = true;
         }
     }
     private void OnTriggerExit(Collider other)
@@ -23,6 +36,7 @@ public class ArrestSystem : MonoBehaviour
         if (other.CompareTag("Outlaw"))
         {
             popup.transform.DOMove(closePos.position, moveTime).SetEase(Ease.InOutSine);
+            isNear = false;
         }
     }
     private void CheckForOutlaw()
@@ -49,5 +63,22 @@ public class ArrestSystem : MonoBehaviour
     void Update()
     {
         CheckForOutlaw();
+    }
+
+
+    public void ShowPopInEffect()
+    {
+        popup_menu.transform.localScale = Vector3.zero;
+        popup_menu.transform.DOScale(Vector3.one * popInScale, popInDuration).SetEase(Ease.OutBack);
+        popup_menu.GetComponent<CanvasGroup>().DOFade(1f, popInDuration);
+        StartCoroutine(HidePopInEffect());
+    }
+
+    private IEnumerator HidePopInEffect()
+    {     
+        yield return new WaitForSeconds(3f);
+        popup_menu.transform.DOScale(Vector3.zero, popInDuration).SetEase(Ease.InBack);
+        popup_menu.GetComponent<CanvasGroup>().DOFade(0f, popInDuration);
+        popup_menu.transform.localScale = Vector3.one;
     }
 }

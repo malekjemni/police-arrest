@@ -30,6 +30,10 @@ using UnityEngine;
         {
             playerInput.arrest = virtualArrestState;
         }
+        public void VirtualScanInput(bool virtualScanState)
+        {
+            playerInput.scan = virtualScanState;
+        }
 
 }
 

@@ -1,7 +1,4 @@
-using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime.Collections;
 using UnityEngine;
-using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
@@ -28,15 +25,17 @@ public class ArrestCutScene : MonoBehaviour
                 track = (AnimationTrack)output.sourceObject;
                 director.SetGenericBinding(track, _outlawTrack);
                 break;
+            }  
+            else if (output.streamName == "playerAnimaton")
+            {
+                track = (AnimationTrack)output.sourceObject;
+                director.SetGenericBinding(track, playerAnimator);
             }
-
-            
         }
     }
     public void PlayCutScene(GameObject _target,Transform _player)
     {
         playerAnimator.SetTrigger("Arrest");
-        initialPos = _player.localPosition;
         playerInput.enabled = false;   
         BindTimelineTracks(_target);
         _target.GetComponent<Animator>().SetTrigger("hold");
@@ -47,7 +46,6 @@ public class ArrestCutScene : MonoBehaviour
 
     private void OnCutsceneStopped(PlayableDirector playableDirector)
     {
-        playerPlacement.localPosition = initialPos;
         playerInput.enabled = true;
         Destroy(target);
         director.stopped -= OnCutsceneStopped;

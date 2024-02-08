@@ -19,6 +19,8 @@ public class ArrestSystem : MonoBehaviour
     [SerializeField] private float popInScale;
     [SerializeField] private Button arrestButton;
     [SerializeField] private Button scanButton;
+    [SerializeField] private ArrestCutScene cutScene;
+    [SerializeField] private Transform arrestPoint;
     public float flickerDuration = 0.2f;
     public int flickerCount = 5;
     private GameObject target;
@@ -127,7 +129,8 @@ public class ArrestSystem : MonoBehaviour
         popup.transform.DOMove(closePos.position, popInDuration).SetEase(Ease.InOutSine);
         arrestButton.interactable = false;
         isNear = false;
-        Destroy(target);
+        cutScene.PlayCutScene(target);
+        target.transform.position = arrestPoint.position;
         ShowPopInEffect();
     }
     private void ShowPopInEffect()
@@ -160,5 +163,5 @@ public class ArrestSystem : MonoBehaviour
         {
            // Debug.Log("Flickering completed!");
         });
-    }
+    }  
 }

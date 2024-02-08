@@ -129,8 +129,8 @@ public class ArrestSystem : MonoBehaviour
         popup.transform.DOMove(closePos.position, popInDuration).SetEase(Ease.InOutSine);
         arrestButton.interactable = false;
         isNear = false;
-        cutScene.PlayCutScene(target);
-        target.transform.position = arrestPoint.position;
+        cutScene.PlayCutScene(target,transform);
+        FaceTarget();
         ShowPopInEffect();
     }
     private void ShowPopInEffect()
@@ -164,4 +164,11 @@ public class ArrestSystem : MonoBehaviour
            // Debug.Log("Flickering completed!");
         });
     }  
+
+    private void FaceTarget()
+    {
+        target.transform.parent = arrestPoint;
+        target.transform.localPosition = Vector3.zero;
+        target.transform.localRotation = Quaternion.identity;
+    }
 }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting.Antlr3.Runtime.Collections;
 using UnityEngine;
 using UnityEngine.Animations;
+using UnityEngine.InputSystem;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
@@ -9,13 +10,12 @@ public class ArrestCutScene : MonoBehaviour
 {
     public PlayableDirector director;
     public TimelineAsset timelineAsset;
-    public GameObject outlawTrack;
     public Animator playerAnimator;
-    public Animator outlawAnimator;
-    public bool autoBindTracks = true;
+    public Transform playerPlacement;
+    public PlayerInput playerInput;
 
     private GameObject target;
-
+    private Vector3 initialPos;
 
     public void BindTimelineTracks(GameObject _outlawTrack)
     {
@@ -33,11 +33,12 @@ public class ArrestCutScene : MonoBehaviour
             
         }
     }
-    public void PlayCutScene(GameObject _target)
+    public void PlayCutScene(GameObject _target,Transform _player)
     {
-        
+        playerAnimator.SetTrigger("Arrest");
+        initialPos = _player.localPosition;
+        playerInput.enabled = false;   
         BindTimelineTracks(_target);
-        playerAnimator.enabled = true;
         _target.GetComponent<Animator>().SetTrigger("hold");
         target = _target;
         director.Play();
@@ -46,7 +47,8 @@ public class ArrestCutScene : MonoBehaviour
 
     private void OnCutsceneStopped(PlayableDirector playableDirector)
     {
-        playerAnimator.enabled = false;
+        playerPlacement.localPosition = initialPos;
+        playerInput.enabled = true;
         Destroy(target);
         director.stopped -= OnCutsceneStopped;
     }

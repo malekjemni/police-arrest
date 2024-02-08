@@ -222,7 +222,7 @@ using UnityEngine.Windows;
         {
             if (_input.arrest && arrestSystem.isNear) 
             { 
-                _animator.SetTrigger(_animIDArrest);
+                //_animator.SetTrigger(_animIDArrest);
                 arrestSystem.ArrestOutlaw();
             }
             _input.arrest = false;             
